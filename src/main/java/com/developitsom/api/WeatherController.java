@@ -2,6 +2,7 @@ package com.developitsom.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,7 +16,7 @@ import com.developitsom.validation.WeatherValidation;
 @RequestMapping(path = "/api/weather", produces = MediaType.APPLICATION_JSON_VALUE)
 public class WeatherController {
 
-	private WeatherService weatherService;
+	private final WeatherService weatherService;
 
 	@Autowired
 	public WeatherController(WeatherService weatherService) {
@@ -23,11 +24,12 @@ public class WeatherController {
 	}
 
 	@GetMapping()
-	public OpenWeatherCoordinateResponse getCoordinatesForLocation(@RequestParam(name = "location", required = true) String location,
+	public ResponseEntity<String> getWeatherByLocation(
+			@RequestParam(name = "location", required = true) String location,
 			@RequestParam(name = "limit", defaultValue = "5", required = false) int limit) {
 
 		WeatherValidation.validate(location);
-		return weatherService.getCoordinatesForLocation(location, limit);
+		return ResponseEntity.ok(weatherService.getWeatherByLocation(location, limit));
 	}
 
 }
